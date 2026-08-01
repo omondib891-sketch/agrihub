@@ -6,7 +6,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'agrihub2026secretkey'
+app.secret_key = 'agrihub2026$ecretKey!Kenya#Farmers'
+app.config['SESSION_COOKIE_SECURE'] = False
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['PERMANENT_SESSION_LIFETIME'] = 86400
 
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
@@ -60,6 +64,7 @@ def login():
         db   = get_db()
         user = db.execute('SELECT * FROM users WHERE email=?', (email,)).fetchone()
         if user and check_password_hash(user['password'], password):
+            session.permanent = True
             session['user_id']  = user['id']
             session['user_name']= user['name']
             session['is_admin'] = user['is_admin']
