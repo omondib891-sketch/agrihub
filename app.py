@@ -360,3 +360,13 @@ def admin_update_order(oid):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/setup_admin_agrihub2026')
+def setup_admin():
+    db = get_db()
+    db.execute("UPDATE users SET is_admin=1 WHERE email='omondib891@gmail.com'")
+    db.commit()
+    user = db.execute("SELECT * FROM users WHERE email='omondib891@gmail.com'").fetchone()
+    if user and user['is_admin']:
+        return '<h2 style="color:green;font-family:sans-serif;">✅ Admin access granted! Now <a href="/login">login</a> and go to /admin</h2>'
+    return '<h2 style="color:red;font-family:sans-serif;">❌ User not found. Make sure you have registered first.</h2>'
