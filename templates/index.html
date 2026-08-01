@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
-{% block title %}ASK AgriHub 2026 - Kenya's Agricultural Marketplace{% endblock %}
+{% block title %}AgriHub - Kenya's Agricultural Marketplace{% endblock %}
 {% block content %}
 
 <!-- Hero -->
 <div class="hero">
     <div class="container text-center">
-        <span class="badge-theme mb-3 d-inline-block">🌿 ASK 2026 Official Theme</span>
-        <h1>Kenya's Climate Smart<br>Agricultural Marketplace</h1>
-        <p class="lead mt-3 mb-4" style="color:#c8e6c9;">Buy, sell and connect with farmers across Kenya. Aligned with ASK's vision for sustainable economic growth.</p>
+        <span class="badge-theme mb-3 d-inline-block">🌿 Climate Smart Agriculture</span>
+        <h1>Kenya's Agricultural<br>Marketplace</h1>
+        <p class="lead mt-3 mb-4" style="color:#c8e6c9;">Buy, sell and connect with farmers across Kenya. Fresh produce, livestock, dairy and more — direct from the farm.</p>
         <a href="/marketplace" class="btn btn-gold btn-lg me-3 px-4"><i class="bi bi-shop me-2"></i>Browse Marketplace</a>
         <a href="/register" class="btn btn-outline-light btn-lg px-4"><i class="bi bi-upload me-2"></i>Sell Your Products</a>
     </div>
@@ -32,16 +32,16 @@
         </div>
         <div class="col-6 col-md-3">
             <div class="card p-4">
-                <i class="bi bi-calendar-check-fill text-success fs-2"></i>
-                <h3 class="fw-bold text-success mt-2">21</h3>
-                <p class="text-muted mb-0">ASK Events in 2026</p>
+                <i class="bi bi-truck text-success fs-2"></i>
+                <h3 class="fw-bold text-success mt-2">100+</h3>
+                <p class="text-muted mb-0">Verified Farmers</p>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="card p-4">
                 <i class="bi bi-award-fill text-warning fs-2"></i>
-                <h3 class="fw-bold text-warning mt-2">100+</h3>
-                <p class="text-muted mb-0">Verified Farmers</p>
+                <h3 class="fw-bold text-warning mt-2">KSh 1M+</h3>
+                <p class="text-muted mb-0">Sales Facilitated</p>
             </div>
         </div>
     </div>
@@ -79,30 +79,32 @@
     {% endif %}
 </div>
 
-<!-- Upcoming Events -->
+<!-- How It Works -->
 <div style="background:#e8f5e9;" class="py-5">
     <div class="container">
-        <h2 class="section-title mb-4">📅 ASK 2026 Upcoming Events</h2>
-        <div class="row g-3">
-            {% for event in events[:6] %}
-            <div class="col-md-6">
-                <div class="event-card">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <strong>{{ event.name }}</strong>
-                            <p class="text-muted small mb-0"><i class="bi bi-geo-alt me-1"></i>{{ event.venue }}</p>
-                            {% if event.description %}
-                            <p class="text-muted small mb-0">{{ event.description }}</p>
-                            {% endif %}
-                        </div>
-                        <span class="badge bg-success ms-3 text-nowrap">{{ event.event_date }}</span>
-                    </div>
+        <h2 class="section-title mb-4">⚡ How AgriHub Works</h2>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="card p-4 h-100">
+                    <i class="bi bi-person-plus-fill text-success fs-1 mb-3"></i>
+                    <h5 class="fw-bold">1. Register</h5>
+                    <p class="text-muted">Create your free farmer account with your farm name and county.</p>
                 </div>
             </div>
-            {% endfor %}
-        </div>
-        <div class="text-center mt-4">
-            <a href="/events" class="btn btn-agri px-5">View Full Calendar</a>
+            <div class="col-md-4">
+                <div class="card p-4 h-100">
+                    <i class="bi bi-upload text-warning fs-1 mb-3"></i>
+                    <h5 class="fw-bold">2. List Products</h5>
+                    <p class="text-muted">Upload your products with photos, prices and quantities.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 h-100">
+                    <i class="bi bi-cash-stack text-success fs-1 mb-3"></i>
+                    <h5 class="fw-bold">3. Sell & Get Paid</h5>
+                    <p class="text-muted">Buyers order and pay via M-Pesa. Track all payments in your dashboard.</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
