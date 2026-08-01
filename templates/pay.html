@@ -18,42 +18,142 @@
             <span>Total Amount</span>
             <span class="text-success fs-5">KSh {{ "%.0f"|format(order.total) }}</span>
         </div>
+        <p class="small text-muted mt-2 mb-0">Payment Method: <strong>{{ order.payment_method }}</strong></p>
     </div>
 
-    <!-- M-Pesa Instructions -->
+    <!-- M-Pesa -->
+    {% if order.payment_method == 'M-Pesa' %}
     <div class="card p-4 mb-4" style="border-left:5px solid #4CAF50;">
-        <h6 class="fw-bold mb-3"><i class="bi bi-phone me-2 text-success"></i>M-Pesa Payment Instructions</h6>
+        <h6 class="fw-bold mb-3"><i class="bi bi-phone-fill me-2 text-success"></i>M-Pesa Instructions</h6>
         <ol class="mb-0">
-            <li class="mb-2">Go to <strong>M-Pesa</strong> on your phone</li>
+            <li class="mb-2">Open <strong>M-Pesa</strong> on your phone</li>
             <li class="mb-2">Select <strong>Lipa na M-Pesa → Send Money</strong></li>
-            <li class="mb-2">Enter Paybill/Till or seller's number: <strong class="text-success">{{ order.phone }}</strong></li>
+            <li class="mb-2">Enter seller's number: <strong class="text-success">{{ order.phone }}</strong></li>
             <li class="mb-2">Amount: <strong class="text-success">KSh {{ "%.0f"|format(order.total) }}</strong></li>
-            <li class="mb-2">Enter your M-Pesa PIN and confirm</li>
-            <li>Copy the <strong>confirmation code</strong> (e.g. <em>RGH4K2LMNP</em>) and paste below</li>
+            <li class="mb-2">Enter your PIN and confirm</li>
+            <li>Enter the <strong>confirmation code</strong> from the SMS below</li>
         </ol>
     </div>
-
-    <!-- Confirm Payment Form -->
     <div class="card p-4">
-        <h6 class="fw-bold mb-3">Enter M-Pesa Confirmation Code</h6>
         <form method="POST">
-            <div class="mb-3">
-                <label class="form-label">M-Pesa Code <span class="text-danger">*</span></label>
-                <input type="text" name="mpesa_code" class="form-control form-control-lg text-center fw-bold"
-                       placeholder="e.g. RGH4K2LMNP" maxlength="12" required style="letter-spacing:3px;text-transform:uppercase;">
-                <div class="form-text">This is the code sent to you via SMS by Safaricom after payment.</div>
-            </div>
-            <div class="alert alert-warning small">
-                <i class="bi bi-exclamation-triangle me-2"></i>
-                Only submit after you have actually sent the money. False codes will be flagged.
-            </div>
-            <button type="submit" class="btn btn-gold w-100 fw-bold btn-lg">
-                <i class="bi bi-check2-circle me-2"></i>Confirm Payment
-            </button>
+            <label class="form-label fw-bold">M-Pesa Confirmation Code</label>
+            <input type="text" name="mpesa_code" class="form-control form-control-lg text-center fw-bold mb-3"
+                   placeholder="e.g. RGH4K2LMNP" maxlength="12" required style="letter-spacing:3px;text-transform:uppercase;">
+            <div class="alert alert-warning small"><i class="bi bi-exclamation-triangle me-2"></i>Only submit after sending the money.</div>
+            <button type="submit" class="btn btn-success w-100 fw-bold btn-lg"><i class="bi bi-check2-circle me-2"></i>Confirm M-Pesa Payment</button>
         </form>
-        <div class="text-center mt-3">
-            <a href="/my_orders" class="text-muted small">Pay later from My Orders</a>
-        </div>
+    </div>
+
+    <!-- Airtel Money -->
+    {% elif order.payment_method == 'Airtel Money' %}
+    <div class="card p-4 mb-4" style="border-left:5px solid #e53935;">
+        <h6 class="fw-bold mb-3"><i class="bi bi-phone me-2 text-danger"></i>Airtel Money Instructions</h6>
+        <ol class="mb-0">
+            <li class="mb-2">Open <strong>Airtel Money</strong> on your phone</li>
+            <li class="mb-2">Select <strong>Send Money</strong></li>
+            <li class="mb-2">Enter seller's number: <strong class="text-danger">{{ order.phone }}</strong></li>
+            <li class="mb-2">Amount: <strong class="text-danger">KSh {{ "%.0f"|format(order.total) }}</strong></li>
+            <li class="mb-2">Enter your PIN and confirm</li>
+            <li>Enter the <strong>confirmation code</strong> from the SMS below</li>
+        </ol>
+    </div>
+    <div class="card p-4">
+        <form method="POST">
+            <label class="form-label fw-bold">Airtel Money Confirmation Code</label>
+            <input type="text" name="mpesa_code" class="form-control form-control-lg text-center fw-bold mb-3"
+                   placeholder="e.g. AT1234567" maxlength="12" required style="letter-spacing:3px;text-transform:uppercase;">
+            <div class="alert alert-warning small"><i class="bi bi-exclamation-triangle me-2"></i>Only submit after sending the money.</div>
+            <button type="submit" class="btn btn-danger w-100 fw-bold btn-lg"><i class="bi bi-check2-circle me-2"></i>Confirm Airtel Money Payment</button>
+        </form>
+    </div>
+
+    <!-- T-Kash -->
+    {% elif order.payment_method == 'T-Kash' %}
+    <div class="card p-4 mb-4" style="border-left:5px solid #1565C0;">
+        <h6 class="fw-bold mb-3"><i class="bi bi-phone me-2 text-primary"></i>T-Kash Instructions</h6>
+        <ol class="mb-0">
+            <li class="mb-2">Open <strong>T-Kash</strong> on your Telkom line</li>
+            <li class="mb-2">Select <strong>Send Money</strong></li>
+            <li class="mb-2">Enter seller's number: <strong class="text-primary">{{ order.phone }}</strong></li>
+            <li class="mb-2">Amount: <strong class="text-primary">KSh {{ "%.0f"|format(order.total) }}</strong></li>
+            <li class="mb-2">Enter your PIN and confirm</li>
+            <li>Enter the <strong>confirmation code</strong> from the SMS below</li>
+        </ol>
+    </div>
+    <div class="card p-4">
+        <form method="POST">
+            <label class="form-label fw-bold">T-Kash Confirmation Code</label>
+            <input type="text" name="mpesa_code" class="form-control form-control-lg text-center fw-bold mb-3"
+                   placeholder="e.g. TK1234567" maxlength="12" required style="letter-spacing:3px;text-transform:uppercase;">
+            <div class="alert alert-warning small"><i class="bi bi-exclamation-triangle me-2"></i>Only submit after sending the money.</div>
+            <button type="submit" class="btn btn-primary w-100 fw-bold btn-lg"><i class="bi bi-check2-circle me-2"></i>Confirm T-Kash Payment</button>
+        </form>
+    </div>
+
+    <!-- Bank Transfer -->
+    {% elif order.payment_method == 'Bank Transfer' %}
+    <div class="card p-4 mb-4" style="border-left:5px solid #333;">
+        <h6 class="fw-bold mb-3"><i class="bi bi-bank me-2"></i>Bank Transfer Instructions</h6>
+        <ol class="mb-0">
+            <li class="mb-2">The seller will <strong>contact you</strong> on {{ order.phone }} with their bank details</li>
+            <li class="mb-2">Transfer <strong>KSh {{ "%.0f"|format(order.total) }}</strong> to their account</li>
+            <li class="mb-2">Get the <strong>transaction reference number</strong> from your bank</li>
+            <li>Enter it below to confirm your payment</li>
+        </ol>
+    </div>
+    <div class="card p-4">
+        <form method="POST">
+            <label class="form-label fw-bold">Bank Transaction Reference</label>
+            <input type="text" name="mpesa_code" class="form-control form-control-lg text-center fw-bold mb-3"
+                   placeholder="e.g. TRF123456789" maxlength="20" required style="letter-spacing:2px;text-transform:uppercase;">
+            <div class="alert alert-warning small"><i class="bi bi-exclamation-triangle me-2"></i>Only submit after completing the bank transfer.</div>
+            <button type="submit" class="btn btn-dark w-100 fw-bold btn-lg"><i class="bi bi-check2-circle me-2"></i>Confirm Bank Transfer</button>
+        </form>
+    </div>
+
+    <!-- Cash on Delivery -->
+    {% elif order.payment_method == 'Cash on Delivery' %}
+    <div class="card p-4 mb-4" style="border-left:5px solid #F9A825;">
+        <h6 class="fw-bold mb-3"><i class="bi bi-cash-stack me-2 text-warning"></i>Cash on Delivery</h6>
+        <ol class="mb-0">
+            <li class="mb-2">The seller will <strong>contact you</strong> on {{ order.phone }} to confirm</li>
+            <li class="mb-2">They will arrange <strong>delivery</strong> to {{ order.delivery_address }}</li>
+            <li class="mb-2">Pay <strong>KSh {{ "%.0f"|format(order.total) }}</strong> in cash when the order arrives</li>
+            <li>Keep order number <strong>#{{ order.id }}</strong> for reference</li>
+        </ol>
+    </div>
+    <div class="card p-4">
+        <form method="POST">
+            <input type="hidden" name="mpesa_code" value="CASH-ON-DELIVERY">
+            <div class="alert alert-info small mb-3"><i class="bi bi-info-circle me-2"></i>Click confirm to acknowledge you will pay cash on delivery.</div>
+            <button type="submit" class="btn btn-warning w-100 fw-bold btn-lg text-dark"><i class="bi bi-check2-circle me-2"></i>Confirm Cash on Delivery</button>
+        </form>
+    </div>
+
+    <!-- PayPal -->
+    {% elif order.payment_method == 'PayPal' %}
+    <div class="card p-4 mb-4" style="border-left:5px solid #003087;">
+        <h6 class="fw-bold mb-3"><i class="bi bi-paypal me-2" style="color:#003087;"></i>PayPal Instructions</h6>
+        <ol class="mb-0">
+            <li class="mb-2">The seller will <strong>contact you</strong> on {{ order.phone }} with their PayPal email</li>
+            <li class="mb-2">Send <strong>KSh {{ "%.0f"|format(order.total) }}</strong> (equivalent in USD/EUR) via PayPal</li>
+            <li class="mb-2">Get the <strong>PayPal Transaction ID</strong> from your PayPal receipt</li>
+            <li>Enter it below to confirm your payment</li>
+        </ol>
+    </div>
+    <div class="card p-4">
+        <form method="POST">
+            <label class="form-label fw-bold">PayPal Transaction ID</label>
+            <input type="text" name="mpesa_code" class="form-control form-control-lg text-center fw-bold mb-3"
+                   placeholder="e.g. 9XH12345AB678901C" maxlength="20" required style="letter-spacing:2px;text-transform:uppercase;">
+            <div class="alert alert-warning small"><i class="bi bi-exclamation-triangle me-2"></i>Only submit after completing the PayPal payment.</div>
+            <button type="submit" class="btn w-100 fw-bold btn-lg text-white" style="background:#003087;"><i class="bi bi-check2-circle me-2"></i>Confirm PayPal Payment</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-3">
+        <a href="/my_orders" class="text-muted small">View all my orders</a>
     </div>
 </div>
 {% endblock %}

@@ -3,6 +3,8 @@
 {% block content %}
 <div class="container my-4" style="max-width:700px;">
     <h2 class="section-title mb-4">✅ Checkout</h2>
+
+    <!-- Order Summary -->
     <div class="card p-4 mb-4">
         <h6 class="fw-bold mb-3">Order Summary</h6>
         {% for item in items %}
@@ -17,23 +19,109 @@
             <span class="product-price">KSh {{ "%.0f"|format(total) }}</span>
         </div>
     </div>
+
+    <!-- Form -->
     <div class="card p-4">
         <h6 class="fw-bold mb-3">Delivery Details</h6>
         <form method="POST">
             <div class="mb-3">
-                <label class="form-label">M-Pesa / Contact Phone</label>
+                <label class="form-label">Phone Number</label>
                 <input type="text" name="phone" class="form-control" placeholder="+254..." required>
-                <div class="form-text">The seller will use this to confirm your order.</div>
+                <div class="form-text">The seller will use this to contact you.</div>
             </div>
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label">Delivery Address</label>
                 <textarea name="delivery_address" class="form-control" rows="3" placeholder="Town, County or pickup point..." required></textarea>
             </div>
-            <div class="alert alert-info small">
-                <i class="bi bi-info-circle me-2"></i>Payment is arranged directly with the seller. They will contact you after placing the order.
+
+            <!-- Payment Method -->
+            <label class="form-label fw-semibold mb-3">Select Payment Method</label>
+            <div class="row g-3 mb-3">
+
+                <div class="col-6 col-md-4">
+                    <div class="card p-3 text-center payment-option selected" onclick="selectPayment('M-Pesa', this)" style="cursor:pointer;">
+                        <i class="bi bi-phone-fill fs-2 text-success"></i>
+                        <p class="fw-bold mb-0 mt-2 small">M-Pesa</p>
+                        <small class="text-muted">Safaricom</small>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-4">
+                    <div class="card p-3 text-center payment-option" onclick="selectPayment('Airtel Money', this)" style="cursor:pointer;">
+                        <i class="bi bi-phone fs-2 text-danger"></i>
+                        <p class="fw-bold mb-0 mt-2 small">Airtel Money</p>
+                        <small class="text-muted">Airtel Kenya</small>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-4">
+                    <div class="card p-3 text-center payment-option" onclick="selectPayment('T-Kash', this)" style="cursor:pointer;">
+                        <i class="bi bi-phone fs-2 text-primary"></i>
+                        <p class="fw-bold mb-0 mt-2 small">T-Kash</p>
+                        <small class="text-muted">Telkom Kenya</small>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-4">
+                    <div class="card p-3 text-center payment-option" onclick="selectPayment('Bank Transfer', this)" style="cursor:pointer;">
+                        <i class="bi bi-bank fs-2 text-dark"></i>
+                        <p class="fw-bold mb-0 mt-2 small">Bank Transfer</p>
+                        <small class="text-muted">Any Kenyan Bank</small>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-4">
+                    <div class="card p-3 text-center payment-option" onclick="selectPayment('Cash on Delivery', this)" style="cursor:pointer;">
+                        <i class="bi bi-cash-stack fs-2 text-warning"></i>
+                        <p class="fw-bold mb-0 mt-2 small">Cash on Delivery</p>
+                        <small class="text-muted">Pay on arrival</small>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-4">
+                    <div class="card p-3 text-center payment-option" onclick="selectPayment('PayPal', this)" style="cursor:pointer;">
+                        <i class="bi bi-paypal fs-2" style="color:#003087;"></i>
+                        <p class="fw-bold mb-0 mt-2 small">PayPal</p>
+                        <small class="text-muted">International</small>
+                    </div>
+                </div>
+
             </div>
-            <button type="submit" class="btn btn-gold w-100 fw-bold btn-lg">Place Order <i class="bi bi-check2-circle ms-2"></i></button>
+
+            <input type="hidden" name="payment_method" id="payment_method" value="M-Pesa">
+
+            <div class="alert alert-info small mb-4" id="payment_note">
+                <i class="bi bi-info-circle me-1"></i> You will send M-Pesa to the seller's number after placing the order.
+            </div>
+
+            <button type="submit" class="btn btn-gold w-100 fw-bold btn-lg">
+                Place Order <i class="bi bi-check2-circle ms-2"></i>
+            </button>
         </form>
     </div>
 </div>
+
+<style>
+.payment-option { border: 2px solid #e0e0e0; transition: all 0.2s; }
+.payment-option.selected { border: 2px solid #4CAF50 !important; background: #f1f8e9; }
+.payment-option:hover { border-color: #4CAF50; }
+</style>
+
+<script>
+const notes = {
+    'M-Pesa': '📱 You will send M-Pesa to the seller\'s number after placing the order.',
+    'Airtel Money': '📱 You will send Airtel Money to the seller\'s number after placing the order.',
+    'T-Kash': '📱 You will send T-Kash to the seller\'s number after placing the order.',
+    'Bank Transfer': '🏦 The seller will share their bank account details after you place the order.',
+    'Cash on Delivery': '💵 You will pay cash when your order is delivered to you.',
+    'PayPal': '🌍 The seller will send you a PayPal payment request after you place the order.'
+};
+
+function selectPayment(method, el) {
+    document.querySelectorAll('.payment-option').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('payment_method').value = method;
+    document.getElementById('payment_note').innerHTML = '<i class="bi bi-info-circle me-1"></i>' + notes[method];
+}
+</script>
 {% endblock %}
