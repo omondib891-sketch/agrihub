@@ -9,7 +9,7 @@
         <h1>Kenya's Agricultural<br>Marketplace</h1>
         <p class="lead mt-3 mb-4" style="color:#c8e6c9;">Buy, sell and connect with farmers across Kenya. Fresh produce, livestock, dairy and more — direct from the farm.</p>
         <a href="/marketplace" class="btn btn-gold btn-lg me-3 px-4"><i class="bi bi-shop me-2"></i>Browse Marketplace</a>
-        <a href="/register" class="btn btn-outline-light btn-lg px-4"><i class="bi bi-upload me-2"></i>Sell Your Products</a>
+        <a href="{% if session.user_id %}/add_product{% else %}/register{% endif %}" class="btn btn-outline-light btn-lg px-4"><i class="bi bi-upload me-2"></i>Sell Your Products</a>
     </div>
 </div>
 
