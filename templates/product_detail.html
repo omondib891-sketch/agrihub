@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} - ASK AgriHub{% endblock %}
+{% block content %}
+<div class="container my-4">
+    <a href="/marketplace" class="btn btn-outline-secondary btn-sm mb-3"><i class="bi bi-arrow-left me-1"></i>Back to Marketplace</a>
+    <div class="row g-4">
+        <div class="col-md-5">
+            <img src="/static/uploads/{{ product.image }}" class="img-fluid rounded-3 shadow" alt="{{ product.name }}"
+                 onerror="this.src='https://via.placeholder.com/500x350/2E7D32/ffffff?text=🌿+AgriHub'" style="width:100%;height:320px;object-fit:cover;">
+        </div>
+        <div class="col-md-7">
+            <span class="badge badge-category mb-2">{{ product.category }}</span>
+            <h2 class="fw-bold">{{ product.name }}</h2>
+            <p class="text-muted"><i class="bi bi-shop me-1"></i>{{ product.farm_name }} &nbsp;|&nbsp; <i class="bi bi-geo-alt me-1"></i>{{ product.county }}</p>
+            <h3 class="product-price">KSh {{ "%.0f"|format(product.price) }} <small class="text-muted fw-normal fs-6">/{{ product.unit }}</small></h3>
+            <hr>
+            <p>{{ product.description or 'No description provided.' }}</p>
+            <p><strong>Available Qty:</strong> {{ product.quantity }} {{ product.unit }}(s)</p>
+            <p><strong>Seller:</strong> {{ product.seller_name }}</p>
+            <p><strong>Contact:</strong> {{ product.phone or 'Contact via platform' }}</p>
+            <div class="d-flex gap-3 mt-4">
+                <a href="/add_to_cart/{{ product.id }}" class="btn btn-agri px-4"><i class="bi bi-cart-plus me-2"></i>Add to Cart</a>
+                <a href="/profile/{{ product.user_id }}" class="btn btn-outline-success px-4">View Farm</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

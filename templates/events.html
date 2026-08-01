@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}ASK Events 2026 - AgriHub{% endblock %}
+{% block content %}
+<div class="container my-4">
+    <h2 class="section-title mb-2">📅 ASK 2026 Calendar of Events</h2>
+    <p class="text-muted mb-4">Theme: <em>"Promoting Climate Smart Agriculture and Trade Initiatives for Sustainable Economic Growth"</em></p>
+    <div class="row g-3">
+        {% for event in events %}
+        <div class="col-md-6">
+            <div class="card p-3 h-100">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="fw-bold mb-1">{{ event.name }}</h6>
+                        <p class="small text-muted mb-1"><i class="bi bi-geo-alt me-1"></i>{{ event.venue }}</p>
+                        {% if event.description %}
+                        <p class="small text-muted mb-0">{{ event.description }}</p>
+                        {% endif %}
+                    </div>
+                    <span class="badge bg-success ms-3 text-nowrap">{{ event.event_date }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="alert alert-success mt-4">
+        <i class="bi bi-info-circle me-2"></i>
+        For more details, visit <a href="https://ask.co.ke" target="_blank" class="alert-link">ask.co.ke</a> or call +020 8070808/9.
+    </div>
+</div>
+{% endblock %}

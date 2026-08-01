@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}ASK AgriHub 2026 - Kenya's Agricultural Marketplace{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<div class="hero">
+    <div class="container text-center">
+        <span class="badge-theme mb-3 d-inline-block">🌿 ASK 2026 Official Theme</span>
+        <h1>Kenya's Climate Smart<br>Agricultural Marketplace</h1>
+        <p class="lead mt-3 mb-4" style="color:#c8e6c9;">Buy, sell and connect with farmers across Kenya. Aligned with ASK's vision for sustainable economic growth.</p>
+        <a href="/marketplace" class="btn btn-gold btn-lg me-3 px-4"><i class="bi bi-shop me-2"></i>Browse Marketplace</a>
+        <a href="/register" class="btn btn-outline-light btn-lg px-4"><i class="bi bi-upload me-2"></i>Sell Your Products</a>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="container my-5">
+    <div class="row text-center g-4">
+        <div class="col-6 col-md-3">
+            <div class="card p-4">
+                <i class="bi bi-people-fill text-success fs-2"></i>
+                <h3 class="fw-bold text-success mt-2">47+</h3>
+                <p class="text-muted mb-0">Counties Connected</p>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card p-4">
+                <i class="bi bi-basket-fill text-warning fs-2"></i>
+                <h3 class="fw-bold text-warning mt-2">500+</h3>
+                <p class="text-muted mb-0">Products Listed</p>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card p-4">
+                <i class="bi bi-calendar-check-fill text-success fs-2"></i>
+                <h3 class="fw-bold text-success mt-2">21</h3>
+                <p class="text-muted mb-0">ASK Events in 2026</p>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card p-4">
+                <i class="bi bi-award-fill text-warning fs-2"></i>
+                <h3 class="fw-bold text-warning mt-2">100+</h3>
+                <p class="text-muted mb-0">Verified Farmers</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Products -->
+<div class="container mb-5">
+    <h2 class="section-title mb-4">🛒 Featured Products</h2>
+    {% if featured %}
+    <div class="row g-4">
+        {% for product in featured %}
+        <div class="col-6 col-md-3">
+            <div class="card h-100">
+                <img src="/static/uploads/{{ product.image }}" class="card-img-top" alt="{{ product.name }}"
+                     onerror="this.src='https://via.placeholder.com/300x180/2E7D32/ffffff?text=🌿+AgriHub'">
+                <div class="card-body">
+                    <span class="badge badge-category mb-1">{{ product.category }}</span>
+                    <h6 class="card-title mt-1">{{ product.name }}</h6>
+                    <p class="text-muted small mb-1"><i class="bi bi-shop me-1"></i>{{ product.farm_name }}</p>
+                    <p class="product-price mb-2">KSh {{ "%.0f"|format(product.price) }} <small class="text-muted fw-normal">/{{ product.unit }}</small></p>
+                    <a href="/product/{{ product.id }}" class="btn btn-agri btn-sm w-100">View Product</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="/marketplace" class="btn btn-outline-success px-5">View All Products <i class="bi bi-arrow-right ms-2"></i></a>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-basket fs-1 text-muted"></i>
+        <p class="text-muted mt-3">No products yet. <a href="/register">Register as a farmer</a> to list your products!</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Upcoming Events -->
+<div style="background:#e8f5e9;" class="py-5">
+    <div class="container">
+        <h2 class="section-title mb-4">📅 ASK 2026 Upcoming Events</h2>
+        <div class="row g-3">
+            {% for event in events[:6] %}
+            <div class="col-md-6">
+                <div class="event-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>{{ event.name }}</strong>
+                            <p class="text-muted small mb-0"><i class="bi bi-geo-alt me-1"></i>{{ event.venue }}</p>
+                            {% if event.description %}
+                            <p class="text-muted small mb-0">{{ event.description }}</p>
+                            {% endif %}
+                        </div>
+                        <span class="badge bg-success ms-3 text-nowrap">{{ event.event_date }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="/events" class="btn btn-agri px-5">View Full Calendar</a>
+        </div>
+    </div>
+</div>
+
+<!-- Categories -->
+<div class="container my-5">
+    <h2 class="section-title mb-4">🌾 Shop by Category</h2>
+    <div class="row g-3 text-center">
+        {% set cats = [('Vegetables','bi-flower1','#4CAF50'),('Fruits','bi-apple','#F9A825'),('Grains & Cereals','bi-grid','#795548'),('Livestock','bi-heart-pulse','#E91E63'),('Dairy','bi-droplet','#2196F3'),('Poultry','bi-egg','#FF9800'),('Inputs & Tools','bi-tools','#607D8B'),('Organic Products','bi-leaf','#8BC34A')] %}
+        {% for name, icon, color in cats %}
+        <div class="col-6 col-md-3">
+            <a href="/marketplace?category={{ name }}" class="text-decoration-none">
+                <div class="card p-3">
+                    <i class="bi {{ icon }} fs-2" style="color:{{ color }}"></i>
+                    <p class="mb-0 mt-2 fw-semibold" style="color:#333;">{{ name }}</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Pay for Order #{{ order.id }} - ASK AgriHub{% endblock %}
+{% block content %}
+<div class="container my-4" style="max-width:650px;">
+    <h2 class="section-title mb-4">💳 Complete Payment</h2>
+
+    <!-- Order Summary -->
+    <div class="card p-4 mb-4">
+        <h6 class="fw-bold mb-3">Order #{{ order.id }} Summary</h6>
+        {% for item in items %}
+        <div class="d-flex justify-content-between small mb-1">
+            <span>{{ item.name }} × {{ item.qty }} {{ item.unit }}</span>
+            <span>KSh {{ "%.0f"|format(item.price * item.qty) }}</span>
+        </div>
+        {% endfor %}
+        <hr>
+        <div class="d-flex justify-content-between fw-bold">
+            <span>Total Amount</span>
+            <span class="text-success fs-5">KSh {{ "%.0f"|format(order.total) }}</span>
+        </div>
+    </div>
+
+    <!-- M-Pesa Instructions -->
+    <div class="card p-4 mb-4" style="border-left:5px solid #4CAF50;">
+        <h6 class="fw-bold mb-3"><i class="bi bi-phone me-2 text-success"></i>M-Pesa Payment Instructions</h6>
+        <ol class="mb-0">
+            <li class="mb-2">Go to <strong>M-Pesa</strong> on your phone</li>
+            <li class="mb-2">Select <strong>Lipa na M-Pesa → Send Money</strong></li>
+            <li class="mb-2">Enter Paybill/Till or seller's number: <strong class="text-success">{{ order.phone }}</strong></li>
+            <li class="mb-2">Amount: <strong class="text-success">KSh {{ "%.0f"|format(order.total) }}</strong></li>
+            <li class="mb-2">Enter your M-Pesa PIN and confirm</li>
+            <li>Copy the <strong>confirmation code</strong> (e.g. <em>RGH4K2LMNP</em>) and paste below</li>
+        </ol>
+    </div>
+
+    <!-- Confirm Payment Form -->
+    <div class="card p-4">
+        <h6 class="fw-bold mb-3">Enter M-Pesa Confirmation Code</h6>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">M-Pesa Code <span class="text-danger">*</span></label>
+                <input type="text" name="mpesa_code" class="form-control form-control-lg text-center fw-bold"
+                       placeholder="e.g. RGH4K2LMNP" maxlength="12" required style="letter-spacing:3px;text-transform:uppercase;">
+                <div class="form-text">This is the code sent to you via SMS by Safaricom after payment.</div>
+            </div>
+            <div class="alert alert-warning small">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                Only submit after you have actually sent the money. False codes will be flagged.
+            </div>
+            <button type="submit" class="btn btn-gold w-100 fw-bold btn-lg">
+                <i class="bi bi-check2-circle me-2"></i>Confirm Payment
+            </button>
+        </form>
+        <div class="text-center mt-3">
+            <a href="/my_orders" class="text-muted small">Pay later from My Orders</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

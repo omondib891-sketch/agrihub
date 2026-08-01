@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Receipt - Order #{{ order.id }}{% endblock %}
+{% block content %}
+<div class="container my-4" style="max-width:650px;">
+    <!-- Receipt Card -->
+    <div class="card p-4 shadow" style="border-top:5px solid #4CAF50;">
+        <div class="text-center mb-4">
+            <i class="bi bi-check-circle-fill text-success" style="font-size:3rem;"></i>
+            <h3 class="fw-bold mt-2 text-success">Payment Confirmed!</h3>
+            <p class="text-muted">Order #{{ order.id }} — {{ order.created_at[:16] }}</p>
+        </div>
+
+        <hr>
+        <div class="row mb-3">
+            <div class="col-6">
+                <p class="small text-muted mb-0">Buyer</p>
+                <p class="fw-semibold mb-0">{{ order.buyer_name }}</p>
+            </div>
+            <div class="col-6">
+                <p class="small text-muted mb-0">Farm / Business</p>
+                <p class="fw-semibold mb-0">{{ order.farm_name }}</p>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-6">
+                <p class="small text-muted mb-0">Payment Method</p>
+                <p class="fw-semibold mb-0">{{ order.payment_method }}</p>
+            </div>
+            <div class="col-6">
+                <p class="small text-muted mb-0">M-Pesa Code</p>
+                <p class="fw-semibold mb-0 text-success">{{ order.mpesa_code or 'N/A' }}</p>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-6">
+                <p class="small text-muted mb-0">Payment Time</p>
+                <p class="fw-semibold mb-0">{{ order.paid_at or '—' }}</p>
+            </div>
+            <div class="col-6">
+                <p class="small text-muted mb-0">Delivery Address</p>
+                <p class="fw-semibold mb-0">{{ order.delivery_address }}</p>
+            </div>
+        </div>
+
+        <hr>
+        <h6 class="fw-bold mb-3">Items Purchased</h6>
+        {% for item in items %}
+        <div class="d-flex justify-content-between mb-2">
+            <span>{{ item.name }} <small class="text-muted">× {{ item.qty }} {{ item.unit }}</small></span>
+            <span class="fw-semibold">KSh {{ "%.0f"|format(item.price * item.qty) }}</span>
+        </div>
+        {% endfor %}
+        <hr>
+        <div class="d-flex justify-content-between fw-bold fs-5">
+            <span>Total Paid</span>
+            <span class="text-success">KSh {{ "%.0f"|format(order.total) }}</span>
+        </div>
+
+        <div class="alert alert-success mt-4 small">
+            <i class="bi bi-info-circle me-2"></i>
+            Keep this receipt for your records. The seller will arrange delivery to <strong>{{ order.delivery_address }}</strong>.
+        </div>
+
+        <div class="d-flex gap-3 mt-3">
+            <a href="/my_orders" class="btn btn-agri flex-fill">My Orders</a>
+            <a href="/marketplace" class="btn btn-outline-success flex-fill">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

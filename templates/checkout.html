@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Checkout - ASK AgriHub{% endblock %}
+{% block content %}
+<div class="container my-4" style="max-width:700px;">
+    <h2 class="section-title mb-4">✅ Checkout</h2>
+    <div class="card p-4 mb-4">
+        <h6 class="fw-bold mb-3">Order Summary</h6>
+        {% for item in items %}
+        <div class="d-flex justify-content-between small mb-1">
+            <span>{{ item.product.name }} × {{ item.qty }}</span>
+            <span>KSh {{ "%.0f"|format(item.subtotal) }}</span>
+        </div>
+        {% endfor %}
+        <hr>
+        <div class="d-flex justify-content-between fw-bold">
+            <span>Total</span>
+            <span class="product-price">KSh {{ "%.0f"|format(total) }}</span>
+        </div>
+    </div>
+    <div class="card p-4">
+        <h6 class="fw-bold mb-3">Delivery Details</h6>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">M-Pesa / Contact Phone</label>
+                <input type="text" name="phone" class="form-control" placeholder="+254..." required>
+                <div class="form-text">The seller will use this to confirm your order.</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Delivery Address</label>
+                <textarea name="delivery_address" class="form-control" rows="3" placeholder="Town, County or pickup point..." required></textarea>
+            </div>
+            <div class="alert alert-info small">
+                <i class="bi bi-info-circle me-2"></i>Payment is arranged directly with the seller. They will contact you after placing the order.
+            </div>
+            <button type="submit" class="btn btn-gold w-100 fw-bold btn-lg">Place Order <i class="bi bi-check2-circle ms-2"></i></button>
+        </form>
+    </div>
+</div>
+{% endblock %}

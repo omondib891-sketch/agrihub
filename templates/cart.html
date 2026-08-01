@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}My Cart - ASK AgriHub{% endblock %}
+{% block content %}
+<div class="container my-4">
+    <h2 class="section-title mb-4">🛒 My Cart</h2>
+    {% if items %}
+    <div class="row g-4">
+        <div class="col-md-8">
+            {% for item in items %}
+            <div class="card mb-3 p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="/static/uploads/{{ item.product.image }}" alt="{{ item.product.name }}"
+                         style="width:80px;height:80px;object-fit:cover;border-radius:8px;"
+                         onerror="this.src='https://via.placeholder.com/80x80/2E7D32/fff?text=🌿'">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-0">{{ item.product.name }}</h6>
+                        <p class="text-muted small mb-0">KSh {{ "%.0f"|format(item.product.price) }}/{{ item.product.unit }} × {{ item.qty }}</p>
+                    </div>
+                    <div class="text-end">
+                        <p class="product-price mb-1">KSh {{ "%.0f"|format(item.subtotal) }}</p>
+                        <a href="/remove_from_cart/{{ item.product.id }}" class="btn btn-sm btn-outline-danger">Remove</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4">
+                <h5 class="fw-bold">Order Summary</h5>
+                <hr>
+                {% for item in items %}
+                <div class="d-flex justify-content-between small mb-1">
+                    <span>{{ item.product.name }} ×{{ item.qty }}</span>
+                    <span>KSh {{ "%.0f"|format(item.subtotal) }}</span>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between fw-bold">
+                    <span>Total</span>
+                    <span class="product-price">KSh {{ "%.0f"|format(total) }}</span>
+                </div>
+                <a href="/checkout" class="btn btn-gold w-100 mt-3 fw-bold">Proceed to Checkout <i class="bi bi-arrow-right ms-1"></i></a>
+                <a href="/marketplace" class="btn btn-outline-secondary w-100 mt-2">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-cart-x fs-1 text-muted"></i>
+        <p class="text-muted mt-3">Your cart is empty.</p>
+        <a href="/marketplace" class="btn btn-agri px-4">Browse Products</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

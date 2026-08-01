@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Add Product - ASK AgriHub{% endblock %}
+{% block content %}
+<div class="container my-4" style="max-width:650px;">
+    <a href="/dashboard" class="btn btn-outline-secondary btn-sm mb-3"><i class="bi bi-arrow-left me-1"></i>Back to Dashboard</a>
+    <div class="card p-4 shadow">
+        <h3 class="section-title mb-4">📦 List a New Product</h3>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Product Name</label>
+                <input type="text" name="name" class="form-control" placeholder="e.g. Organic Tomatoes" required>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Category</label>
+                    <select name="category" class="form-select" required>
+                        <option value="">Select category</option>
+                        {% for cat in ['Vegetables','Fruits','Grains & Cereals','Livestock','Dairy','Poultry','Inputs & Tools','Organic Products','Herbs & Spices','Aquaculture','Flowers','Other'] %}
+                        <option>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Unit of Measure</label>
+                    <select name="unit" class="form-select" required>
+                        {% for u in ['kg','g','bag','crate','litre','dozen','piece','bunch','tonne','acre'] %}
+                        <option>{{ u }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Price (KSh)</label>
+                    <input type="number" name="price" class="form-control" placeholder="e.g. 150" min="1" step="0.01" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Available Quantity</label>
+                    <input type="number" name="quantity" class="form-control" placeholder="e.g. 200" min="1" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Description</label>
+                <textarea name="description" class="form-control" rows="3" placeholder="Describe your product — quality, farming method, harvest date..."></textarea>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Product Image</label>
+                <input type="file" name="image" class="form-control" accept="image/*">
+                <div class="form-text">Max 5MB. JPG, PNG, WebP accepted.</div>
+            </div>
+            <button type="submit" class="btn btn-gold w-100 fw-bold btn-lg">
+                <i class="bi bi-upload me-2"></i>List Product on Marketplace
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

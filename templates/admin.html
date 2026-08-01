@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}Admin Panel - ASK AgriHub{% endblock %}
+{% block content %}
+<div class="container my-4">
+    <h2 class="section-title mb-4">⚙️ Admin Panel — Full Records</h2>
+
+    <!-- Summary -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3"><div class="card p-3 text-center"><h3 class="text-success">{{ users|length }}</h3><p class="mb-0 text-muted small">Users</p></div></div>
+        <div class="col-6 col-md-3"><div class="card p-3 text-center"><h3 class="text-warning">{{ products|length }}</h3><p class="mb-0 text-muted small">Products</p></div></div>
+        <div class="col-6 col-md-3"><div class="card p-3 text-center"><h3 class="text-success">{{ orders|length }}</h3><p class="mb-0 text-muted small">Orders</p></div></div>
+        <div class="col-6 col-md-3"><div class="card p-3 text-center"><h3 class="fw-bold" style="color:#2E7D32;">KSh {{ "%.0f"|format(total_sales) }}</h3><p class="mb-0 text-muted small">Revenue Confirmed</p></div></div>
+    </div>
+
+    <ul class="nav nav-tabs mb-4" id="adminTabs">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-payments">💰 Payments</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-orders">📦 Orders</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-users">👥 Users</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-products">🌾 Products</a></li>
+    </ul>
+
+    <div class="tab-content">
+
+        <!-- PAYMENTS TAB -->
+        <div class="tab-pane fade show active" id="tab-payments">
+            <div class="card p-3">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle small">
+                        <thead class="table-success">
+                            <tr>
+                                <th>Pay #</th><th>Order #</th><th>Buyer</th><th>Buyer Phone</th>
+                                <th>Seller</th><th>Farm</th><th>Amount (KSh)</th>
+                                <th>Method</th><th>M-Pesa Code</th><th>Status</th>
+                                <th>Order Time</th><th>Confirmed At</th><th>Delivery</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in payments %}
+                            <tr>
+                                <td>#{{ p.id }}</td>
+                                <td><a href="/order_receipt/{{ p.order_id }}">#{{ p.order_id }}</a></td>
+                                <td>{{ p.buyer_name }}<br><small class="text-muted">{{ p.buyer_phone }}</small></td>
+                                <td>{{ p.buyer_phone or '—' }}</td>
+                                <td>{{ p.seller_name }}</td>
+                                <td>{{ p.farm_name }}</td>
+                                <td class="fw-bold text-success">{{ "%.0f"|format(p.amount) }}</td>
+                                <td>{{ p.payment_method }}</td>
+                                <td>
+                                    {% if p.mpesa_code %}
+                                    <span class="badge bg-success" style="letter-spacing:1px;">{{ p.mpesa_code }}</span>
+                                    {% else %}<span class="text-muted">—</span>{% endif %}
+                                </td>
+                                <td><span class="badge bg-{{ 'success' if p.status=='Confirmed' else 'warning text-dark' }}">{{ p.status }}</span></td>
+                                <td>{{ p.created_at[:16] }}</td>
+                                <td>{{ p.confirmed_at[:16] if p.confirmed_at else '—' }}</td>
+                                <td>{{ p.delivery_address }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="13" class="text-center text-muted py-4">No payment records yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ORDERS TAB -->
+        <div class="tab-pane fade" id="tab-orders">
+            <div class="card p-3">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle small">
+                        <thead class="table-warning">
+                            <tr><th>Order #</th><th>Buyer</th><th>Phone</th><th>Total</th><th>Payment</th><th>M-Pesa Code</th><th>Order Status</th><th>Placed At</th><th>Paid At</th><th>Update Status</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for o in orders %}
+                            <tr>
+                                <td>#{{ o.id }}</td>
+                                <td>{{ o.buyer_name }}</td>
+                                <td>{{ o.buyer_phone }}</td>
+                                <td class="fw-bold">KSh {{ "%.0f"|format(o.total) }}</td>
+                                <td><span class="badge bg-{{ 'success' if o.payment_status=='Paid' else 'danger' }}">{{ o.payment_status }}</span></td>
+                                <td>{{ o.mpesa_code or '—' }}</td>
+                                <td><span class="badge bg-{{ 'success' if o.status=='Delivered' else 'warning text-dark' }}">{{ o.status }}</span></td>
+                                <td>{{ o.created_at[:16] }}</td>
+                                <td>{{ o.paid_at[:16] if o.paid_at else '—' }}</td>
+                                <td>
+                                    <form method="POST" action="/admin/update_order/{{ o.id }}" class="d-flex gap-1">
+                                        <select name="status" class="form-select form-select-sm" style="min-width:110px;">
+                                            {% for s in ['Pending','Confirmed','Processing','Dispatched','Delivered','Cancelled'] %}
+                                            <option {% if o.status==s %}selected{% endif %}>{{ s }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button class="btn btn-sm btn-agri">Save</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- USERS TAB -->
+        <div class="tab-pane fade" id="tab-users">
+            <div class="card p-3">
+                <div class="table-responsive">
+                    <table class="table table-hover small">
+                        <thead class="table-success"><tr><th>ID</th><th>Name</th><th>Farm</th><th>Email</th><th>Phone</th><th>County</th><th>Admin</th><th>Joined</th></tr></thead>
+                        <tbody>
+                            {% for u in users %}
+                            <tr>
+                                <td>{{ u.id }}</td><td>{{ u.name }}</td><td>{{ u.farm_name }}</td>
+                                <td>{{ u.email }}</td><td>{{ u.phone or '—' }}</td><td>{{ u.county }}</td>
+                                <td><span class="badge bg-{{ 'danger' if u.is_admin else 'secondary' }}">{{ 'Yes' if u.is_admin else 'No' }}</span></td>
+                                <td>{{ u.created_at[:10] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRODUCTS TAB -->
+        <div class="tab-pane fade" id="tab-products">
+            <div class="card p-3">
+                <div class="table-responsive">
+                    <table class="table table-hover small">
+                        <thead class="table-warning"><tr><th>ID</th><th>Product</th><th>Farm</th><th>Category</th><th>Price</th><th>Qty</th><th>Status</th><th>Listed</th></tr></thead>
+                        <tbody>
+                            {% for p in products %}
+                            <tr>
+                                <td>{{ p.id }}</td><td>{{ p.name }}</td><td>{{ p.farm_name }}</td>
+                                <td><span class="badge badge-category">{{ p.category }}</span></td>
+                                <td>KSh {{ "%.0f"|format(p.price) }}/{{ p.unit }}</td>
+                                <td>{{ p.quantity }}</td>
+                                <td><span class="badge bg-{{ 'success' if p.available else 'secondary' }}">{{ 'Active' if p.available else 'Off' }}</span></td>
+                                <td>{{ p.created_at[:10] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

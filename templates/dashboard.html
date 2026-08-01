@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - ASK AgriHub{% endblock %}
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="section-title mb-0">🌾 Farmer Dashboard</h2>
+            <p class="text-muted small mt-1">{{ user.farm_name }} | {{ user.county }} County | {{ user.phone or 'No phone' }}</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/payments" class="btn btn-outline-success"><i class="bi bi-receipt me-1"></i>Payment Records</a>
+            <a href="/add_product" class="btn btn-gold fw-bold"><i class="bi bi-plus-circle me-2"></i>Add Product</a>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card p-3 text-center" style="border-top:4px solid #4CAF50;">
+                <h4 class="text-success fw-bold">{{ products|length }}</h4>
+                <p class="text-muted small mb-0">Products Listed</p>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card p-3 text-center" style="border-top:4px solid #F9A825;">
+                <h4 class="text-warning fw-bold">{{ sales|length }}</h4>
+                <p class="text-muted small mb-0">Orders Received</p>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card p-3 text-center" style="border-top:4px solid #2E7D32;">
+                <h4 class="fw-bold" style="color:#2E7D32;">KSh {{ "%.0f"|format(total_revenue) }}</h4>
+                <p class="text-muted small mb-0">Revenue Confirmed</p>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card p-3 text-center" style="border-top:4px solid #2196F3;">
+                <h4 class="fw-bold" style="color:#2196F3;">
+                    {{ sales|selectattr('payment_status','equalto','Unpaid')|list|length }}
+                </h4>
+                <p class="text-muted small mb-0">Awaiting Payment</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Products -->
+    <div class="card p-4 mb-4">
+        <div class="d-flex justify-content-between mb-3">
+            <h5 class="fw-bold mb-0">My Products</h5>
+            <a href="/add_product" class="btn btn-sm btn-agri">+ Add New</a>
+        </div>
+        {% if products %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-success">
+                    <tr><th>Product</th><th>Category</th><th>Price</th><th>Qty</th><th>Status</th><th>Listed On</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    {% for p in products %}
+                    <tr>
+                        <td><strong>{{ p.name }}</strong></td>
+                        <td><span class="badge badge-category">{{ p.category }}</span></td>
+                        <td>KSh {{ "%.0f"|format(p.price) }}/{{ p.unit }}</td>
+                        <td>{{ p.quantity }}</td>
+                        <td><span class="badge bg-{{ 'success' if p.available else 'secondary' }}">{{ 'Active' if p.available else 'Inactive' }}</span></td>
+                        <td><small>{{ p.created_at[:10] }}</small></td>
+                        <td>
+                            <a href="/product/{{ p.id }}" class="btn btn-sm btn-outline-success">View</a>
+                            <a href="/delete_product/{{ p.id }}" class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Delete this product?')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <i class="bi bi-box-seam fs-2 text-muted"></i>
+            <p class="text-muted mt-2">No products yet. <a href="/add_product">Add your first product!</a></p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Sales Orders with Payment Info -->
+    <div class="card p-4">
+        <div class="d-flex justify-content-between mb-3">
+            <h5 class="fw-bold mb-0">Orders for My Products</h5>
+            <a href="/payments" class="btn btn-sm btn-outline-success">Full Payment Records</a>
+        </div>
+        {% if sales %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle small">
+                <thead class="table-warning">
+                    <tr>
+                        <th>Order #</th>
+                        <th>Buyer</th>
+                        <th>Buyer Phone</th>
+                        <th>Items</th>
+                        <th>Total (KSh)</th>
+                        <th>Payment</th>
+                        <th>M-Pesa Code</th>
+                        <th>Status</th>
+                        <th>Order Time</th>
+                        <th>Paid At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in sales %}
+                    <tr>
+                        <td><strong>#{{ s.id }}</strong></td>
+                        <td>
+                            {{ s.buyer_name }}<br>
+                            <small class="text-muted">{{ s.buyer_email }}</small>
+                        </td>
+                        <td>{{ s.phone or '—' }}</td>
+                        <td><small>{{ s.items_summary }}</small></td>
+                        <td class="fw-bold text-success">{{ "%.0f"|format(s.total) }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if s.payment_status=='Paid' else 'danger' }}">
+                                {{ s.payment_status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if s.mpesa_code %}
+                            <span class="badge bg-success" style="letter-spacing:1px;">{{ s.mpesa_code }}</span>
+                            {% else %}<span class="text-muted">—</span>{% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if s.status=='Delivered' else 'warning text-dark' }}">
+                                {{ s.status }}
+                            </span>
+                        </td>
+                        <td><small>{{ s.created_at[:16] }}</small></td>
+                        <td><small>{{ s.paid_at[:16] if s.paid_at else '—' }}</small></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted text-center py-3">No orders yet. Share your products!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}My Orders - ASK AgriHub{% endblock %}
+{% block content %}
+<div class="container my-4">
+    <h2 class="section-title mb-4">📦 My Orders</h2>
+    {% if orders %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-success">
+                <tr>
+                    <th>Order #</th>
+                    <th>Total</th>
+                    <th>Payment</th>
+                    <th>M-Pesa Code</th>
+                    <th>Order Status</th>
+                    <th>Placed At</th>
+                    <th>Paid At</th>
+                    <th>Delivery</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td><strong>#{{ order.id }}</strong></td>
+                    <td class="fw-bold text-success">KSh {{ "%.0f"|format(order.total) }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'success' if order.payment_status=='Paid' else 'danger' }}">
+                            {{ order.payment_status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if order.mpesa_code %}
+                        <span class="badge bg-success" style="letter-spacing:1px;">{{ order.mpesa_code }}</span>
+                        {% else %}<span class="text-muted small">—</span>{% endif %}
+                    </td>
+                    <td>
+                        <span class="badge bg-{{ 'success' if order.status=='Delivered' else 'warning text-dark' if order.status=='Pending' else 'info' }}">
+                            {{ order.status }}
+                        </span>
+                    </td>
+                    <td><small>{{ order.created_at[:16] }}</small></td>
+                    <td><small>{{ order.paid_at[:16] if order.paid_at else '—' }}</small></td>
+                    <td><small>{{ order.delivery_address }}</small></td>
+                    <td>
+                        {% if order.payment_status == 'Unpaid' %}
+                        <a href="/pay/{{ order.id }}" class="btn btn-gold btn-sm fw-bold">Pay Now</a>
+                        {% else %}
+                        <a href="/order_receipt/{{ order.id }}" class="btn btn-outline-success btn-sm">Receipt</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-bag-x fs-1 text-muted"></i>
+        <p class="text-muted mt-3">You haven't placed any orders yet.</p>
+        <a href="/marketplace" class="btn btn-agri px-4">Browse Marketplace</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
